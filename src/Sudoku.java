@@ -17,6 +17,7 @@ public class Sudoku{
 
 
 	//Print sudoku grid
+	//aproved
 	public static void printSudoku(int [][] su){
 		for(int i = 0; i< su.length; i++){
 			for(int k = 0; k<su[i].length; k++){
@@ -30,6 +31,7 @@ public class Sudoku{
 	}
 
 	//Print determine grid
+	//approved
 	public static void printDetermine(int [][][] poss){
 		for(int i = 0; i< poss.length;i++){
 			System.out.print("ROW: " + i + " ");
@@ -47,6 +49,7 @@ public class Sudoku{
 	}
 	
 	//is Number in sudoku Row
+	//aproved
 	public static boolean isInRow(int su[][], int number, int row){
 		for(int i = 0; i<su[row].length; i++){
 			if(su[row][i] == number){
@@ -57,6 +60,7 @@ public class Sudoku{
 	}
 	
 	//is number in sudoku col
+	//approved
 	public static boolean isInCol(int su[][], int number, int col){
 		for(int i = 0; i<su.length; i++){
 			if(su[i][col] == number){
@@ -67,6 +71,7 @@ public class Sudoku{
 	}
 	
 	//is number in sudoku grid
+	//approved
 	public static boolean isInGrid(int su[][], int number, int grid){
 
 		//   0 1 2   3 4 5   6 7 8 
@@ -99,6 +104,7 @@ public class Sudoku{
 
 	
 	//determine possibilities for each empty box
+	//approved
 	public static int[][][] determine(int [][] sudoku){
 		int [][][] back = new int[9][9][];
 		for(int i = 0; i<sudoku.length; i++){
@@ -128,106 +134,57 @@ public class Sudoku{
 	}
 
 	
-	//if only choice in row,col,grid write it into sudoku
-	public static void solve(int su[][]){
-		int[][][] poss = determine(su);
-		//return array
-		int suback [][] = su;
-		
-		System.out.println("Given Sudoku: \n");
-		printSudoku(su);
-		System.out.println("\n\n");
 
-		while(!isSolved(su)){
-			//rows
-			for(int i = 0; i<poss.length;i++){
-				//cols
-				for(int j = 0; j<poss[i].length; j++){
-					//possibilities
-					if(poss[i][j] != null)
-					for(int k = 0; k<poss[i][j].length; k++){
-						if(poss[i][j].length == 1 || testRowColGrid(poss, poss[i][j][k], i, j)){
-							suback[i][j] = poss[i][j][k];
-							poss = removeFromDetermine(poss,poss[i][j][k], i, j);
-							//nullpointerexception^
-							printSudoku(suback);
-							System.out.println("\n\n\n");
-							printDetermine(poss);
-						//	try{
-						//		TimeUnit.SECONDS.sleep(10);
-						//	}catch(InterruptedException e){System.out.println(e);}
-						}
-					}
-				}
-			}
-		}
-		System.out.println("Solved Sudoku:");
-		printSudoku(suback);
-	}
-
-	//test for row,col,grid if only choice in there -> TRUE IF SO
-	public static boolean testRowColGrid(int poss[][][], int number, int row, int col){
-		
-		boolean ret = false;
-		
-		//test row
-		outer:
+	//test for row TRUE IF SO
+	//test row
+	//approved
+	public static boolean testRow(int poss[][][], int number, int row, int col){
 		for(int i =0; i<poss.length; i++){
 			if(poss[i][col] != null){
 				for(int n = 0; n < poss[i][col].length; n++){
-					if(poss[i][col][n] == number){
-						ret = false;
-						//System.out.println("row");
-						break outer;
-					}else{
-						ret = true;
-						System.out.println("row");
+					if(poss[i][col][n] == number & i != row){
+						return false;
 					}
 				}
 			}
 		}
+		return true;
+	}
 
-		//test col
-		outer2:
+	//test col
+	//approved
+	public static boolean testCol(int poss[][][], int number, int row, int col){
 		for(int i = 0; i<poss[row].length; i++){
 			if(poss[row][i] != null){
 				for(int n = 0; n<poss[row][i].length; n++){
-					if(poss[row][i][n] == number){
-						ret = ret || false;
-						//System.out.println("Col");
-						break outer2;
-					}else{
-						ret = true;
-						System.out.println("Col");
+					if(poss[row][i][n] == number & i != col){
+						return false;
 					}
 				}
 			}
 		}
+		return true;
+	}
 
-		//test grid
-		outer3:
+	//test grid
+	public static boolean testGrid(int poss[][][], int number, int row, int col){	
 		for(int i = 0; i<3; i++){
 			for(int j = 0; j<3;j++){
 				if(poss[row - row%3 +i][col - col%3 +j] != null){
 					for(int n = 0; n<poss[row - row%3+i][col - col%3 +j].length; n++){
-						if(poss[row - row%3 +i][col - col%3 +j][n] == number){
-							ret = ret || false;
-						//	System.out.println("grid");
-							break outer3;
-						}else{
-							ret = true;
-							System.out.println("grid");
+						if(poss[row - row%3 +i][col - col%3 +j][n] == number && !((row == (row - row%3 + i)) & (col == col  - col%3 +j))){
+							return false;
 						}
 					}
 				}
 			}
 		}
-		
-		//else return true;
-		return ret;
+		return true;
 	}
+		
 
-	// TODO remove from row, col and grid!!
+	// remove from row, col and grid!!
+	// approved
 	public static int[][][] removeFromDetermine(int[][][] poss, int number, int row, int col){
 		
 		poss[row][col] = null;		
@@ -257,7 +214,6 @@ public class Sudoku{
 		return poss;
 	}
 
-
 	public static boolean isSolved(int su[][]){
 		for(int i = 0; i<su.length;i++){
 			for(int j = 0; j<su[i].length; j++){
@@ -269,11 +225,8 @@ public class Sudoku{
 		return true;
 	}
 
-	/*
-	 * remove number from array
-	 * return array without number
-	 * return null if array lenght 1
-	 */
+	//
+	//passively approved!
 	public static int [] isInRemoveFromArray(int [] array, int number){
 		for(int i = 0; i<array.length; i++){
 			if(array[i] == number){
@@ -295,6 +248,44 @@ public class Sudoku{
 		return array;
 	}
 
+	//if only choice in row,col,grid write it into sudoku
+	public static void solve(int su[][]){
+		int[][][] poss = determine(su);
+		//return array
+		int suback [][] = su;
+		int limit = 0;
+
+		System.out.println("Given Sudoku: \n");
+		printSudoku(su);
+		System.out.println("\n\n");
+		
+		while(!isSolved(su)){
+			//rows
+			for(int i = 0; i<poss.length;i++){
+				//cols
+				for(int j = 0; j<poss[i].length; j++){
+					//possibilities
+					if(poss[i][j] != null)
+					for(int k = 0; k<poss[i][j].length; k++){
+						if(poss[i][j].length == 1 || testRow(poss, poss[i][j][k], i, j) || testCol(poss, poss[i][j][k], i, j)|| testGrid(poss, poss[i][j][k], i, j)){
+							suback[i][j] = poss[i][j][k];
+							//printSudoku(suback);
+							poss = removeFromDetermine(poss,poss[i][j][k], i, j);
+							//System.out.println("\n\n\n");
+							break;
+						}
+					}
+				}
+			}
+			if(limit > 999){
+				System.err.println("ERROR: infinite loop, is sudoku solvable?");
+				break;
+			}
+			limit++;
+		}
+		System.out.println("Solved Sudoku:");
+		printSudoku(suback);
+	}
 
 	public static void main(String [] args){
 
@@ -335,37 +326,7 @@ public class Sudoku{
 			{0,0,0,7,0,0,0,0,2},
 			{0,0,0,2,4,8,0,0,9}
 		};
-
-		9, 6 3 5 8 7 2 4 1
-		5, 2 4 3 9 1 8 7 6
-		8, 7 1 6 2 4 3 9 5
-		6, 1 8 4 7 9 5 2 3
-		3, 9 7 8 5 2 6 1 4
-		2, 4 5 1 3 6 9 8 7
-		7, 3 2 9 1 5 4 6 8
-		4, 8 9 7 6 3 1 5 2
-		1, 5 6 2 4 8 7 3 9
-
- //		printSudoku(sudoku);
-
-		//int test [] = {1,2,3,4,5};
-		//test = isInRemoveFromArray(test,1);
-		//for(int i = 0; i<test.length; i++){
-		//	System.out.println(test[i]);
-		//}
-	//	printDetermine(determine(sudoku));
-		//solve(sudoku);
 		
-		//test
-		//int test [] = {1,2,3,4,5,6,7};
-		//for(int i = 0; i< isInRemoveFromArray(test,3).length; i++){
-		//	System.out.println(isInRemoveFromArray(test, 3)[i]);
-		//}
-		
-		Sysytem.out.println(isSolved(
-
-
-
-
-	}
+		solve(sudoku);
+	}		
 }
